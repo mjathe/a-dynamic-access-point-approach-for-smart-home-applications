@@ -10,7 +10,10 @@
 
 \maketitle
 
-\section{Motivation}
+\section{Einleitung}
+
+\subsection{Motivation}
+
 Der Smart Home Sektor befindet sich seit Jahren in
 einem stetigen Wachstum. Die Zahl der Hersteller von
 Smart Home Produkten nimmt zu und die Automatisierung
@@ -41,7 +44,7 @@ zusätzlichen Access Point installieren. Zudem wird für jedes System
 eine eigene App zur Nutzerinteraktion benötigt.\\
 
 Ziel dieser Arbeit ist es, einen Ansatz für dynamische Access Points zu entwickeln. Alle Knoten im Netzwerk sollen zur Laufzeit die Funktion des Access Points übernehmen können. Als Anwendugnsbeispiel soll ein System zur Pflanzen- und Raumluftüberwachung dienen. 
-\section{Anforderungen}
+\subsection{Anforderungen}
 \begin{itemize}
     \item Das System muss ohne dedizierten Acces Point auskommen.
     \item Jeder Knoten muss auch als Access Point/Broker fungieren können.
@@ -51,7 +54,7 @@ Ziel dieser Arbeit ist es, einen Ansatz für dynamische Access Points zu entwick
     \item Die Daten müssen über eine Weboberfläche oder App abrufbar sein.
 
 \end{itemize}
-\section{Konzept}
+\subsection{Konzept}
 Es soll ein System entwickelt werden, in dem jeder Knoten, das heißt Sensor, Aktor oder Bedienelement, auch die Funktion des Access Point übernehmen kann. Für die Kommunikation wird MQTT(Message Queuing Telemetry Transport) eingesetzt. MQTT ist ein offenes Netzwerkprotokoll für Machine-to-Machine-Kommunikation (M2M), das die Übertragung von Telemetriedaten in Form von Nachrichten zwischen Geräten ermöglicht.
 MQTT beruht auf dem Client-Server-Modell. Der Server, auch Broker genannt, stellt den Clients Kanäle zur Kommunikation zur Verfügung. Die Clients können diese Kanäle anlegen, auf Ihnen Nachrichten veröffentlichen und sie abonnieren, um Nachrichten von anderen Clients zu empfangen. 
 \\
@@ -96,5 +99,7 @@ Sobald der abgestürzte Client/Broker die Verbindung wieder aufbauen konnte, erh
     \caption{Der ehemalige Broker ist jetzt Client}
     \label{fig:statemachine}
 \end{figure}
+
+\section{Stand der Technik / Related Work}
 \end{document}
 

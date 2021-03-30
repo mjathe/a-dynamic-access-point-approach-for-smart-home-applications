@@ -3,3 +3,6 @@ https://pdf.sciencedirectassets.com/280203/1-s2.0-S1877050918X00064/1-s2.0-S1877
 
 
 https://scholar.google.com.br/scholar?hl=pt-BR&as_sdt=0%2C5&q=dynamic+server+mqtt&btnG=
+
+
+https://ieeexplore.ieee.org/document/8746333

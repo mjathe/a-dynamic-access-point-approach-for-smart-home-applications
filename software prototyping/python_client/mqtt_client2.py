@@ -1,6 +1,6 @@
 import paho.mqtt.client as mqtt
 import subprocess
-
+from dbtable import *
 server = False
 # The callback for when the client receives a CONNACK response from the server.
 def on_connect(client, userdata, flags, rc):
@@ -17,9 +17,9 @@ def on_message(client, userdata, msg):
         iptable[msg.payload] =msg.payload
         print(iptable)
 brokerport = str(1883)
-broker = subprocess.Popen("D:\Sciebo\STUDIUM\Bachelorarbeit\mosquitto\mosquitto -p "+brokerport, shell=False)
-print("Broker auf port "+brokerport+" gestartet.")
-iptable ={}
+#broker = subprocess.Popen("D:\Sciebo\STUDIUM\Bachelorarbeit\mosquitto\mosquitto -p "+brokerport, shell=False)
+#print("Broker auf port "+brokerport+" gestartet.")
+iptable = DbTable('nodes',['id','ip','broker','cloud'])
 
 client = mqtt.Client(client_id="1883")
 client.on_connect = on_connect

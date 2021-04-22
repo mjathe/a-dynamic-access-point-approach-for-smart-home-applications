@@ -4,7 +4,9 @@ import time
 import json
 iptable = []
 
-server = True
+server = False
+def printDict(d):
+    print(json.dumps(d, indent = 4))
 # The callback for when the client receives a CONNACK response from the server.
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code "+str(rc))
@@ -16,16 +18,18 @@ def on_connect(client, userdata, flags, rc):
 
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
+    global iptable
     print("Topic: "+msg.topic)
     if str(msg.topic) == "login":
-        print("neuer client: "+msg.topic+" "+(json.loads(msg.payload)))
+        print("neuer client: "+msg.topic)
+        printDict(json.loads(msg.payload))
 
         if server == True:
 
             iptable.append(json.loads(msg.payload))
             client.publish("IPTABLE", json.dumps(iptable), qos=0, retain=False)
     if str(msg.topic) == "IPTABLE":
-        print("update iptable: "+json.loads(msg.payload))
+        print("update iptable: "+str(json.loads(msg.payload)))
         iptable = json.loads(msg.payload)
 
 brokerport = str(1882)

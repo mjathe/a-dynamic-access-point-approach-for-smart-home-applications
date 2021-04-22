@@ -18,6 +18,7 @@ def on_connect(client, userdata, flags, rc):
 
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
+    global iptable
     print("Topic: "+msg.topic)
     if str(msg.topic) == "login":
         print("neuer client: "+msg.topic)
@@ -28,7 +29,7 @@ def on_message(client, userdata, msg):
             iptable.append(json.loads(msg.payload))
             client.publish("IPTABLE", json.dumps(iptable), qos=0, retain=False)
     if str(msg.topic) == "IPTABLE":
-        print("update iptable: "+json.loads(msg.payload))
+        print("update iptable: "+str(json.loads(msg.payload)))
         iptable = json.loads(msg.payload)
 
 brokerport = str(1883)
@@ -49,7 +50,7 @@ client.on_message = on_message
 
 client.connect("localhost", 1883, 60)
 print("Client mit broker verbunden")
-time.sleep(1)
+time.sleep(5)
 print("eine Sekunde gewartet")
 client.publish("login", json.dumps(cliendData), qos=0, retain=False)
 print("Client Data an Broker gesendet")

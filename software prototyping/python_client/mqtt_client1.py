@@ -1,7 +1,8 @@
 import paho.mqtt.client as mqtt
 import subprocess
 import time
-from dbtable import *
+import json
+iptable = []
 
 server = True
 # The callback for when the client receives a CONNACK response from the server.
@@ -10,18 +11,18 @@ def on_connect(client, userdata, flags, rc):
 
     # Subscribing in on_connect() means that if we lose the connection and
     # reconnect then subscriptions will be renewed.
-    client.subscribe("IPTABLE")
-    client.subscribe("login")
+    client.subscribe("IPTABLE",2)
+    client.subscribe("login",2)
 
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
-
+    print("Topic: "+msg.topic)
     if str(msg.topic) == "login":
         print("neuer client: "+msg.topic+" "+(json.loads(msg.payload)))
 
         if server == True:
-            tLoginData = json.loads(msg.payload)
-            iptable.insert(tLoginData[0],tLoginData[1],tLoginData[2])
+
+            iptable.append(json.loads(msg.payload))
             client.publish("IPTABLE", json.dumps(iptable), qos=0, retain=False)
     if str(msg.topic) == "IPTABLE":
         print("update iptable: "+json.loads(msg.payload))
@@ -30,7 +31,11 @@ def on_message(client, userdata, msg):
 brokerport = str(1882)
 #broker = subprocess.Popen(r"C:\Users\Norbert\Desktop\mosquitto\mosquitto -p "+brokerport, shell=False)
 #print("Broker auf port "+brokerport+" gestartet.")
-iptable = DbTable('nodes',['ip','broker','cloud'])
+cliendData = {
+    "ip": brokerport,
+    "broker": server,
+    "cloud": 0
+}
 
 
 print("IPTABLE erstellt")
@@ -39,11 +44,11 @@ print("Client ID gesetzt.")
 client.on_connect = on_connect
 client.on_message = on_message
 
-client.connect("localhost", 1882, 60)
+client.connect("localhost", 1883, 60)
 print("Client mit broker verbunden")
 time.sleep(1)
 print("eine Sekunde gewartet")
-client.publish("login", json.dumps[brokerport, server,0], qos=0, retain=False)
-print("Client ID an Broker gesendet")
+client.publish("login", json.dumps(cliendData), qos=0, retain=False)
+print("Client Data an Broker gesendet")
 
 client.loop_forever()

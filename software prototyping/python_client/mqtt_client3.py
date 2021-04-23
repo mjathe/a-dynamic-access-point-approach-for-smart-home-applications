@@ -15,15 +15,17 @@ def on_connect(client, userdata, flags, rc):
     # reconnect then subscriptions will be renewed.
     client.subscribe("IPTABLE",2)
     client.subscribe("login",2)
-
+    client.subscribe("IPTABLE/alive", 2)
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
     global iptable
     print("Topic: "+msg.topic)
+    if str(msg.topic) == "IPTABLE/alive":
+
     if str(msg.topic) == "login":
         print("neuer client: "+msg.topic)
         printDict(json.loads(msg.payload))
-        
+
         if server == True:
 
             iptable.append(json.loads(msg.payload))

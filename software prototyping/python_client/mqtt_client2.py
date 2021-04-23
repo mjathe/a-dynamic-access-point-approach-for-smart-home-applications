@@ -40,7 +40,7 @@ cliendData = {
     "broker": server,
     "cloud": 0
 }
-
+iptable.append(cliendData)
 
 print("IPTABLE erstellt")
 client = mqtt.Client(client_id="1883")
@@ -50,7 +50,7 @@ client.on_message = on_message
 
 client.connect("localhost", 1883, 60)
 print("Client mit broker verbunden")
-time.sleep(5)
+time.sleep(1)
 print("eine Sekunde gewartet")
 client.publish("login", json.dumps(cliendData), qos=0, retain=False)
 print("Client Data an Broker gesendet")

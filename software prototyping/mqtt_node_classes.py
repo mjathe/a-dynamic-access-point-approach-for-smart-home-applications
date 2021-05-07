@@ -50,11 +50,11 @@ class mqtt_node(Thread):
 
     def __str__(self):
         return f'NodeIP: '+str(self.ip)+'/naccessPointEnabled: '+str(self.accessPointEnabled)+'/naccessPointIP: '+str(self.accessPointIP)+'/n'
-    #@asyncio.coroutine
+
     async def startBroker(self):
         await self.broker.start()
 
-    #@asyncio.coroutine
+
     async def brokerGetMessage(self):
         C = MQTTClient()
         await C.connect('mqtt://localhost:'+str(self.accessPointIP)+'/')
@@ -70,27 +70,4 @@ class mqtt_node(Thread):
         except ClientException as ce:
             self.logger.error("Client exception : %s" % ce)
 
-    def start_node(self):
-        print("test")
-        self.logger = logging.getLogger(__name__)
-        self.config = {
-            'listeners': {
-                'default': {
-                    'type': 'tcp',
-                    'bind': 'localhost:'+str(self.ip)    # 0.0.0.0:1883
-                }
-            },
-            'sys_interval': 10,
-            'topic-check': {
-                'enabled': False
-            }
-        }
-        print(self.config)
-
-        self.broker = Broker(self.config)
-        #if __name__ == '__main__':
-        formatter = "[%(asctime)s] :: %(levelname)s :: %(name)s :: %(message)s"
-        logging.basicConfig(level=logging.INFO, format=formatter)
-        asyncio.get_event_loop().run_until_complete(self.startBroker())
-        asyncio.get_event_loop().run_until_complete(self.brokerGetMessage())
-        asyncio.get_event_loop().run_forever()
+    

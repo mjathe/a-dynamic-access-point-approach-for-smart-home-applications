@@ -5,12 +5,12 @@ from hbmqtt.client import MQTTClient, ClientException
 from hbmqtt.mqtt.constants import QOS_1
 
 logger = logging.getLogger(__name__)
-
+ip = "1882"
 config = {
     'listeners': {
         'default': {
             'type': 'tcp',
-            'bind': 'localhost:1884'    # 0.0.0.0:1883
+            'bind': 'localhost:'+str(ip)    # 0.0.0.0:1883
         }
     },
     'sys_interval': 10,
@@ -21,21 +21,21 @@ config = {
 
 broker = Broker(config)
 
-@asyncio.coroutine
-def startBroker():
-    yield from broker.start()
 
-@asyncio.coroutine
-def brokerGetMessage():
+async def startBroker():
+    await broker.start()
+
+
+async def brokerGetMessage():
     C = MQTTClient()
-    yield from C.connect('mqtt://localhost:1883/')
-    yield from C.subscribe([
-        ("LINTANGtopic/test", QOS_1)
+    await C.connect('mqtt://localhost:'+str(ip)+'/')
+    await C.subscribe([
+        ("IPTABLE", QOS_1)
     ])
     logger.info('Subscribed!')
     try:
         for i in range(1,100):
-            message = yield from C.deliver_message()
+            message = await C.deliver_message()
             packet = message.publish_packet
             print(packet.payload.data.decode('utf-8'))
     except ClientException as ce:

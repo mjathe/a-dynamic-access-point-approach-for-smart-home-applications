@@ -7,7 +7,7 @@ from hbmqtt.client import MQTTClient, ClientException
 from hbmqtt.mqtt.constants import QOS_1
 from mqtt_client_class import *
 import json
-
+import paho.mqtt.client as mqtt
 
 class mqtt_node():
     accessPointEnabled = 0
@@ -70,5 +70,6 @@ class mqtt_node():
         except ClientException as ce:
             self.logger.error("Client exception : %s" % ce)
 
-    #async def start_Client(self):
-    #    client = mqtt_client_class(self.accessPointEnabled, self.ip, self.accessPointIP, self.logger)
+    async def start_Client(self):
+        client = mqtt.Client(client_id=str(self.ip))
+        client.connect("localhost", self.accessPointIP, 60)

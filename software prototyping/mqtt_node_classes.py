@@ -7,9 +7,9 @@ from hbmqtt.client import MQTTClient, ClientException
 from hbmqtt.mqtt.constants import QOS_1
 import paho.mqtt.client as mqtt
 import json
-from threading import Thread
 
-class mqtt_node(Thread):
+
+class mqtt_node():
     accessPointEnabled = 0
     ip = 0
     config = 0
@@ -18,7 +18,7 @@ class mqtt_node(Thread):
     accessPointIP = 0
 
     def __init__(self, accessPointEnabled, ip, accessPointIP = ip):
-        Thread.__init__(self)
+
         self.accessPointEnabled = accessPointEnabled
         self.ip = ip
         self.accessPointIP = accessPointIP
@@ -29,11 +29,11 @@ class mqtt_node(Thread):
                 'default': {
                     'type': 'tcp',
                     'bind': 'localhost:'+str(self.ip)
-                }
-                                },
+                    }
+                },
                 'sys_interval': 10,
                 'topic-check': {
-                'enabled': False
+                    'enabled': False
                 }
             }
         print(self.config)
@@ -54,7 +54,6 @@ class mqtt_node(Thread):
     async def startBroker(self):
         await self.broker.start()
 
-
     async def brokerGetMessage(self):
         C = MQTTClient()
         await C.connect('mqtt://localhost:'+str(self.accessPointIP)+'/')
@@ -70,4 +69,5 @@ class mqtt_node(Thread):
         except ClientException as ce:
             self.logger.error("Client exception : %s" % ce)
 
-    
+        async def start_Client(self):
+            client = mqtt.Client(client_id=str(self.ip))

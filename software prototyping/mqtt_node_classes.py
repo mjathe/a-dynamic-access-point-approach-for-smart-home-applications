@@ -43,9 +43,11 @@ class mqtt_node():
         formatter = "[%(asctime)s] :: %(levelname)s :: %(name)s :: %(message)s"
         logging.basicConfig(level=logging.INFO, format=formatter)
         loop = asyncio.get_event_loop()
+
         loop.run_until_complete(self.startBroker())
+        loop.run_until_complete(self.alive())
         loop.run_until_complete(self.brokerGetMessage())
-        loop.run_until_complete(self.start_Client())
+
         loop.run_forever()
 
 
@@ -59,7 +61,9 @@ class mqtt_node():
         C = MQTTClient()
         await C.connect('mqtt://localhost:'+str(self.accessPointIP)+'/')
         await C.subscribe([
-            ("IPTABLE", QOS_1)
+            ("IPTABLE", QOS_1),
+            ("login", QOS_1),
+            ("IPTABLE/alive", QOS_1)
         ])
         self.logger.info('Subscribed!')
         try:
@@ -69,6 +73,14 @@ class mqtt_node():
                 print(packet.payload.data.decode('utf-8'))
         except ClientException as ce:
             self.logger.error("Client exception : %s" % ce)
+
+
+    async def alive(self):
+        await asyncio.sleep(1)
+        C = MQTTClient()
+        await C.connect('mqtt://localhost:'+str(self.accessPointIP)+'/')
+        await C.publish("IPTABLE/alive", json.dumps(self.ip),qos=QOS_1)
+        print('messages published')
 
     #async def start_Client(self):
     #    client = mqtt_client_class(self.accessPointEnabled, self.ip, self.accessPointIP, self.logger)

@@ -6,6 +6,7 @@ import logging
 #from hbmqtt_broker import *
 import asyncio
 from hbmqtt.broker import Broker
+import os
 accessPointEnabled = 1
 ip = 1883
 brokerip = "localhost"
@@ -57,6 +58,7 @@ def on_disconnect(client, userdata, rc):
         if int(x) < y:
             y = int(x)
     brokerport = y
+    logger.info("new brokerport"+str(brokerport))
     client.loop_stop()
     client.connect(brokerip, brokerport)
     client.loop_start()

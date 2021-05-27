@@ -17,7 +17,7 @@ iptable = {}
 client = 0
 logger = 0
 message_received = ""
-connected = False
+
 config = {
             'listeners': {
                 'default': {
@@ -33,7 +33,7 @@ config = {
 
 
 def on_connect(client, userdata, flags, rc):
-    connected =True
+
     logger.info("Connection returned result: "+str(rc))
     topics = [
         ("IPTABLE"),
@@ -43,17 +43,15 @@ def on_connect(client, userdata, flags, rc):
     logger.info("subscribed to topics: "+str(topics))
 def on_message(client, userdata, msg):
     global message_received
-    time.sleep(1)
+    #time.sleep(1)
     message_received=str(msg.payload.decode("utf-8"))
     handleMessage()
 
 def on_disconnect(client, userdata, rc):
     global iptable
     global brokerport
-
     if rc != 0:
         logger.warning("Unexpected disconnection.")
-    connected=False
     del iptable[str(brokerport)]
     y = 9999
     for x in iptable:
@@ -61,13 +59,9 @@ def on_disconnect(client, userdata, rc):
             y = int(x)
     brokerport = y
     logger.info("new brokerport "+str(brokerport))
-    client.disconnect()
-    #client.loop_stop()
-    #time.sleep(2)
-    #client.connect(brokerip, brokerport)
-    #time.sleep(2)
-    #client.loop_start()
-    #time.sleep(4)
+    client.loop_stop()
+    client.connect(brokerip, brokerport)
+    client.loop_start()
 
 def setup_client(id):
     global client
@@ -125,40 +119,23 @@ if __name__ == "__main__":
 
     #starting broker in a new thread:
 
-    #localBroker = mqtt_broker(ip)
-    #localBroker.start()
-    #localBroker.join()
-
-    #asyncio.get_event_loop().run_until_complete(startBroker())
-    #asyncio.get_event_loop().run_forever()
-
-    #localBroker = threading.Thread(target = thr)
-    #localBroker.start()
+    localBroker = threading.Thread(target = thr)
+    localBroker.start()
 
 
 
+    time.sleep(2)
+    client = mqtt.Client(client_id=str(id))
+    client.on_connect = on_connect
+    client.on_message = on_message
+    client.on_disconnect = on_disconnect
+    logger.info("client set up with id: "+str(id))
+    client.enable_logger()
 
-    #client = mqtt.Client(client_id=str(id))
-    #client.on_connect = on_connect
-    #client.on_message = on_message
-    #client.on_disconnect = on_disconnect
-    #logger.info("client set up with id: "+str(id))
+    client.connect(brokerip, brokerport)
+    client.loop_start() #starting mqtt client in a thread
 
-    #client.enable_logger()
-    while True:
-        if connected==False:
-            client = 0
-            client = mqtt.Client(client_id=str(id))
-            client.on_connect = on_connect
-            client.on_message = on_message
-            client.on_disconnect = on_disconnect
-            client.enable_logger()
-            client.connect(brokerip, brokerport)
-        time.sleep(4)
-        client.loop_start() #starting mqtt client in a thread
-    #if connected==True:
-
-        aliveThread = threading.Thread(target=send_alive(ip))
-        aliveThread.start()
-        #localBroker.join()
-        aliveThread.join()
+    aliveThread = threading.Thread(target=send_alive(ip))
+    aliveThread.start()
+    localBroker.join()
+    aliveThread.join()

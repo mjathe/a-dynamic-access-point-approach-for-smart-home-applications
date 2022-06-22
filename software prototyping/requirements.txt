@@ -3,7 +3,7 @@ dbTable==0.0.4
 docopt==0.6.2
 git-clone==1.0.6
 hbmqtt==0.9.6
-numpy==1.20.2
+numpy==1.22.0
 paho-mqtt==1.5.1
 passlib==1.7.4
 PyYAML==5.4.1
